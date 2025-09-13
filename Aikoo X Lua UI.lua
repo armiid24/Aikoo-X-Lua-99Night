@@ -63,6 +63,23 @@ minBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 minBtn.BackgroundTransparency = 1
 
 
+-- == MINIMIZE ICON == --
+local miniIcon = Instance.new("TextButton", gui)
+miniIcon.Size = UDim2.new(0, 40, 0, 40)
+miniIcon.Position = UDim2.new(0, 10, 1, -50)
+miniIcon.Text = "☰"
+miniIcon.TextColor3 = Color3.fromRGB(255, 255, 255)
+miniIcon.Font = Enum.Font.GothamBold
+miniIcon.TextSize = 22
+miniIcon.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
+miniIcon.BackgroundTransparency = 0.2
+miniIcon.Visible = false
+miniIcon.Name = "MiniIcon"
+
+local miniCorner = Instance.new("UICorner", miniIcon)
+miniCorner.CornerRadius = UDim.new(0, 8)
+
+
 -- == SIDEBAR MENU == --
 local sidebarContainer = Instance.new("Frame", mainFrame)
 sidebarContainer.Size = UDim2.new(0, 140, 1, -40)
@@ -214,7 +231,7 @@ end
 
 -- == FUNGSI EXPANDABLE SECTION (NESTED MENU) == --
 local function createExpandableSection(parent, titleText, subItems, onClick)
-    local subContainer = Instance.new("Frame", section)
+    local section = Instance.new("Frame", parent) -- fixed
     section.Size = UDim2.new(1, -20, 0, 40)
     section.BackgroundTransparency = 1
     section.Name = titleText .. "_Section"
@@ -330,15 +347,7 @@ end
 
 -- == DATA MENU DAN HALAMAN == --
 local menuItems = {
-    "Home",
-    "Main",
-    "Automatically",
-    "Inventory",
-    "Shop",
-    "Webhook",
-    "Misc",
-    "Settings",
-    "Settings UI"
+    "Home","Main","Automatically","Inventory","Shop","Webhook","Misc","Settings","Settings UI"
 }
 
 local menuData = {
@@ -352,6 +361,18 @@ local menuData = {
     ["Settings"] = {},
     ["Settings UI"] = {}
 }
+
+local pageContainers = {}
+for _, tabName in ipairs(menuItems) do
+    local pageFrame = Instance.new("Frame", contentContainer)
+    pageFrame.Size = UDim2.new(1, 0, 1, 0)
+    pageFrame.BackgroundTransparency = 1
+    pageFrame.Visible = false
+    pageFrame.Name = tabName .. "_Page"
+
+    local scroll = createScrollContainer(pageFrame)
+    pageContainers[tabName] = scroll
+end
 
 
 -- == BUAT FRAME PER HALAMAN == --
@@ -375,6 +396,39 @@ local activeColor = Color3.fromRGB(80, 80, 255)
 local hoverColor = Color3.fromRGB(60, 60, 90)
 
 local menuButtons = {}
+
+local function setContent(tabName, items)
+    for name, container in pairs(pageContainers) do
+        container.Parent.Visible = (name == tabName)
+        for _, child in ipairs(container:GetChildren()) do
+            if not child:IsA("UIListLayout") and not child:IsA("UIPadding") then
+                child:Destroy()
+            end
+        end
+    end
+
+    local scroll = pageContainers[tabName]
+    if not scroll then return end
+
+    local contentTitle = Instance.new("TextLabel", scroll)
+    contentTitle.Size = UDim2.new(1, -20, 0, 40)
+    contentTitle.Text = tabName
+    contentTitle.TextSize = 28
+    contentTitle.Font = Enum.Font.SourceSansBold
+    contentTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+    contentTitle.BackgroundTransparency = 1
+    contentTitle.TextXAlignment = Enum.TextXAlignment.Left
+
+    if #items == 0 then
+        local emptyLabel = Instance.new("TextLabel", scroll)
+        emptyLabel.Size = UDim2.new(1, -20, 0, 30)
+        emptyLabel.Text = "No items yet..."
+        emptyLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
+        emptyLabel.BackgroundTransparency = 1
+        emptyLabel.Font = Enum.Font.Gotham
+        emptyLabel.TextXAlignment = Enum.TextXAlignment.Left
+    end
+end
 
 for _, tabName in ipairs(menuItems) do
     local btn = Instance.new("TextButton", sidebar)
