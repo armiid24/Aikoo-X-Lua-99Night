@@ -1,29 +1,123 @@
--- Roblox Hub UI Layout (Glassmorphism Style)
--- LocalScript di StarterGui
-
+-- == SETUP UI UTAMA == --
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
-local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
-gui.Name = "CustomHubUI"
 
--- FRAME UTAMA
+local gui = Instance.new("ScreenGui")
+gui.Name = "CustomHubUI"
+gui.ResetOnSpawn = false
+gui.Parent = player:WaitForChild("PlayerGui")
+
+
+-- == FRAME UTAMA == --
 local mainFrame = Instance.new("Frame", gui)
 mainFrame.Size = UDim2.new(0, 600, 0, 350)
 mainFrame.Position = UDim2.new(0.5, -300, 0.5, -175)
-mainFrame.BackgroundColor3 = Color3.fromRGB(20,20,30)
+mainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
 mainFrame.BackgroundTransparency = 0.2
 mainFrame.Active = true
 mainFrame.Draggable = true
+mainFrame.BorderSizePixel = 0
+mainFrame.Name = "MainFrame"
 
 local UICorner = Instance.new("UICorner", mainFrame)
 UICorner.CornerRadius = UDim.new(0, 12)
 
 local UIStroke = Instance.new("UIStroke", mainFrame)
 UIStroke.Thickness = 1
-UIStroke.Color = Color3.fromRGB(255,255,255)
+UIStroke.Color = Color3.fromRGB(255, 255, 255)
 UIStroke.Transparency = 0.7
 
---// PENGATURAN TEMA //--
+
+-- == TITLE BAR == --
+local titleBar = Instance.new("Frame", mainFrame)
+titleBar.Size = UDim2.new(1, 0, 0, 40)
+titleBar.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
+titleBar.BackgroundTransparency = 0.2
+titleBar.BorderSizePixel = 0
+titleBar.Name = "TitleBar"
+
+local title = Instance.new("TextLabel", titleBar)
+title.Size = UDim2.new(1, -80, 1, 0)
+title.Position = UDim2.new(0, 10, 0, 0)
+title.Text = "Aikoo Hub"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 20
+title.BackgroundTransparency = 1
+title.TextXAlignment = Enum.TextXAlignment.Left
+
+
+-- == TOMBOL CLOSE & MINIMIZE == --
+local closeBtn = Instance.new("TextButton", titleBar)
+closeBtn.Size = UDim2.new(0, 40, 1, 0)
+closeBtn.Position = UDim2.new(1, -40, 0, 0)
+closeBtn.Text = "✕"
+closeBtn.TextColor3 = Color3.fromRGB(255, 80, 80)
+closeBtn.Font = Enum.Font.GothamBold
+closeBtn.TextSize = 20
+closeBtn.BackgroundTransparency = 1
+closeBtn.Name = "CloseButton"
+
+local minBtn = Instance.new("TextButton", titleBar)
+minBtn.Size = UDim2.new(0, 40, 1, 0)
+minBtn.Position = UDim2.new(1, -80, 0, 0)
+minBtn.Text = "–"
+minBtn.TextColor3 = Color3.fromRGB(200, 200, 200)
+minBtn.Font = Enum.Font.GothamBold
+minBtn.TextSize = 20
+minBtn.BackgroundTransparency = 1
+minBtn.Name = "MinimizeButton"
+
+local miniIcon = Instance.new("TextButton", gui)
+miniIcon.Size = UDim2.new(0, 40, 0, 40)
+miniIcon.Position = UDim2.new(0, 10, 1, -50)
+miniIcon.Text = "☰"
+miniIcon.TextColor3 = Color3.fromRGB(255, 255, 255)
+miniIcon.Font = Enum.Font.GothamBold
+miniIcon.TextSize = 22
+miniIcon.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
+miniIcon.BackgroundTransparency = 0.2
+miniIcon.Visible = false
+miniIcon.Name = "MiniIcon"
+
+local miniCorner = Instance.new("UICorner", miniIcon)
+miniCorner.CornerRadius = UDim.new(0, 8)
+
+
+-- == SIDEBAR MENU == --
+local sidebarContainer = Instance.new("Frame", mainFrame)
+sidebarContainer.Size = UDim2.new(0, 140, 1, -40)
+sidebarContainer.Position = UDim2.new(0, 0, 0, 40)
+sidebarContainer.BackgroundTransparency = 1
+sidebarContainer.Name = "SidebarContainer"
+
+local sidebar = Instance.new("ScrollingFrame", sidebarContainer)
+sidebar.Size = UDim2.new(1, 0, 1, 0)
+sidebar.CanvasSize = UDim2.new(0, 0, 0, 0)
+sidebar.ScrollBarThickness = 4
+sidebar.BackgroundTransparency = 1
+sidebar.BorderSizePixel = 0
+sidebar.Name = "Sidebar"
+
+local sidebarLayout = Instance.new("UIListLayout", sidebar)
+sidebarLayout.Padding = UDim.new(0, 6)
+sidebarLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+local sidebarPadding = Instance.new("UIPadding", sidebar)
+sidebarPadding.PaddingTop = UDim.new(0, 10)
+sidebarPadding.PaddingLeft = UDim.new(0, 10)
+sidebarPadding.PaddingRight = UDim.new(0, 10)
+
+
+-- == CONTENT CONTAINER == --
+local contentContainer = Instance.new("Frame", mainFrame)
+contentContainer.Size = UDim2.new(1, -140, 1, -40)
+contentContainer.Position = UDim2.new(0, 140, 0, 40)
+contentContainer.BackgroundTransparency = 1
+contentContainer.Name = "ContentContainer"
+
+
+-- == PENGATURAN TEMA == --
 local Themes = {
     ["Glassy Dark"] = {
         Background = Color3.fromRGB(20, 20, 25),
@@ -56,125 +150,111 @@ local Themes = {
         AccentSecondary = Color3.fromRGB(60, 20, 25),
         Text = Color3.fromRGB(255, 220, 220),
         Border = Color3.fromRGB(150, 80, 80)
-    }
+    },
+    ["Midnight Purple"] = {
+    Background = Color3.fromRGB(25, 10, 40),
+    BackgroundTransparency = 0.25,
+    Accent = Color3.fromRGB(180, 0, 255),
+    AccentSecondary = Color3.fromRGB(60, 20, 80),
+    Text = Color3.fromRGB(240, 220, 255),
+    Border = Color3.fromRGB(120, 60, 160)
+},
+
+["Mint Breeze"] = {
+    Background = Color3.fromRGB(220, 255, 240),
+    BackgroundTransparency = 0.35,
+    Accent = Color3.fromRGB(0, 200, 150),
+    AccentSecondary = Color3.fromRGB(180, 240, 220),
+    Text = Color3.fromRGB(30, 60, 50),
+    Border = Color3.fromRGB(150, 220, 200)
+},
+
+["Cyber Neon"] = {
+    Background = Color3.fromRGB(10, 10, 10),
+    BackgroundTransparency = 0.2,
+    Accent = Color3.fromRGB(0, 255, 180),
+    AccentSecondary = Color3.fromRGB(20, 20, 40),
+    Text = Color3.fromRGB(0, 255, 180),
+    Border = Color3.fromRGB(0, 255, 180)
+},
+
+["Retro Sunset"] = {
+    Background = Color3.fromRGB(255, 120, 80),
+    BackgroundTransparency = 0.3,
+    Accent = Color3.fromRGB(255, 200, 0),
+    AccentSecondary = Color3.fromRGB(200, 80, 60),
+    Text = Color3.fromRGB(40, 10, 10),
+    Border = Color3.fromRGB(255, 160, 80)
+},
+
+["Forest Night"] = {
+    Background = Color3.fromRGB(15, 30, 20),
+    BackgroundTransparency = 0.25,
+    Accent = Color3.fromRGB(0, 100, 60),
+    AccentSecondary = Color3.fromRGB(30, 60, 40),
+    Text = Color3.fromRGB(200, 255, 220),
+    Border = Color3.fromRGB(60, 120, 90)
+},
+
+["Mono Gray"] = {
+    Background = Color3.fromRGB(60, 60, 60),
+    BackgroundTransparency = 0.3,
+    Accent = Color3.fromRGB(120, 120, 120),
+    AccentSecondary = Color3.fromRGB(80, 80, 80),
+    Text = Color3.fromRGB(220, 220, 220),
+    Border = Color3.fromRGB(150, 150, 150)
+}
+
 }
 
 
--- TITLE BAR
-local titleBar = Instance.new("Frame", mainFrame)
-titleBar.Size = UDim2.new(1, 0, 0, 30)
-titleBar.Position = UDim2.new(0, 0, 0, 0)
-titleBar.BackgroundColor3 = Color3.fromRGB(30, 30, 50)
-titleBar.BackgroundTransparency = 0.3
-titleBar.BorderSizePixel = 0
-titleBar.ZIndex = 2
+-- == FUNGSI SCROLL CONTAINER PER HALAMAN == --
+local function createScrollContainer(parent)
+    local scroll = Instance.new("ScrollingFrame", parent)
+    scroll.Size = UDim2.new(1, 0, 1, 0)
+    scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+    scroll.ScrollBarThickness = 6
+    scroll.BackgroundTransparency = 1
+    scroll.BorderSizePixel = 0
+    scroll.Name = "ScrollContainer"
+    scroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    scroll.ScrollingDirection = Enum.ScrollingDirection.Y
 
-local titleCorner = Instance.new("UICorner", titleBar)
-titleCorner.CornerRadius = UDim.new(0, 12)
+    local layout = Instance.new("UIListLayout", scroll)
+    layout.Padding = UDim.new(0, 6)
+    layout.SortOrder = Enum.SortOrder.LayoutOrder
 
-local title = Instance.new("TextLabel", titleBar)
-title.Size = UDim2.new(1, -80, 1, 0)
-title.Position = UDim2.new(0, 10, 0, 0)
-title.Text = "Speed Hub X | Version 5.5.1 | discord.gg/speedhubx"
-title.TextColor3 = Color3.fromRGB(200, 180, 255)
-title.BackgroundTransparency = 1
-title.TextXAlignment = Enum.TextXAlignment.Left
+    local padding = Instance.new("UIPadding", scroll)
+    padding.PaddingTop = UDim.new(0, 10)
+    padding.PaddingLeft = UDim.new(0, 10)
+    padding.PaddingRight = UDim.new(0, 10)
 
--- CLOSE & MINIMIZE
-local closeBtn = Instance.new("TextButton", titleBar)
-closeBtn.Size = UDim2.new(0, 30, 1, 0)
-closeBtn.Position = UDim2.new(1, -30, 0, 0)
-closeBtn.Text = "X"
-closeBtn.TextColor3 = Color3.fromRGB(255, 100, 100)
-closeBtn.BackgroundTransparency = 1
-
-local minBtn = Instance.new("TextButton", titleBar)
-minBtn.Size = UDim2.new(0, 30, 1, 0)
-minBtn.Position = UDim2.new(1, -60, 0, 0)
-minBtn.Text = "-"
-minBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-minBtn.BackgroundTransparency = 1
-
--- SIDEBAR (Scroll)
-local sidebarContainer = Instance.new("Frame", mainFrame)
-sidebarContainer.Size = UDim2.new(0, 160, 1, -30)
-sidebarContainer.Position = UDim2.new(0, 10, 0, 30)
-sidebarContainer.BackgroundTransparency = 1
-
-local sidebar = Instance.new("ScrollingFrame", sidebarContainer)
-sidebar.Size = UDim2.new(1, 0, 1, 0)
-sidebar.CanvasSize = UDim2.new(0,0,0,0)
-sidebar.ScrollBarThickness = 4
-sidebar.BackgroundTransparency = 1
-
-local sideList = Instance.new("UIListLayout", sidebar)
-sideList.Padding = UDim.new(0, 5)
-sideList.FillDirection = Enum.FillDirection.Vertical
-sideList.SortOrder = Enum.SortOrder.LayoutOrder
-
-local UIPaddingSidebar = Instance.new("UIPadding", sidebar)
-UIPaddingSidebar.PaddingLeft = UDim.new(0,5)
-UIPaddingSidebar.PaddingTop = UDim.new(0,5)
-
--- CONTENT (Scroll)
-local contentContainer = Instance.new("Frame", mainFrame)
-contentContainer.Size = UDim2.new(1, -180, 1, -30)
-contentContainer.Position = UDim2.new(0, 180, 0, 30)
-contentContainer.BackgroundTransparency = 1
-
-local content = Instance.new("ScrollingFrame", contentContainer)
-content.Size = UDim2.new(1, 0, 1, 0)
-content.CanvasSize = UDim2.new(0,0,0,0)
-content.ScrollBarThickness = 6
-content.BackgroundTransparency = 1
-
-local UIPaddingContent = Instance.new("UIPadding", content)
-UIPaddingContent.PaddingLeft = UDim.new(0,10)
-UIPaddingContent.PaddingTop = UDim.new(0,10)
-
-local listLayout = Instance.new("UIListLayout", content)
-listLayout.Padding = UDim.new(0, 5)
-listLayout.SortOrder = Enum.SortOrder.LayoutOrder
-
--- === CONTENT UPDATE FUNCTION ===
-local function clearContent()
-    for _,child in ipairs(content:GetChildren()) do
-        if not child:IsA("UIListLayout") and not child:IsA("UIPadding") then
-            child:Destroy()
-        end
-    end
+    return scroll
 end
 
-local function applyTheme(themeName)
-    local theme = Themes[themeName]
-    if not theme then return end
 
-    mainFrame.BackgroundColor3 = theme.Background
-    mainFrame.BackgroundTransparency = theme.BackgroundTransparency
-    UIStroke.Color = theme.Border
-
-    titleBar.BackgroundColor3 = theme.AccentSecondary
-    title.TextColor3 = theme.Text
-    closeBtn.TextColor3 = theme.Accent
-    minBtn.TextColor3 = theme.Text
-end
-
+-- == FUNGSI EXPANDABLE SECTION (NESTED MENU) == --
 local function createExpandableSection(parent, titleText, subItems, onClick)
     local section = Instance.new("Frame", parent)
     section.Size = UDim2.new(1, -20, 0, 40)
     section.BackgroundTransparency = 1
+    section.Name = titleText .. "_Section"
 
     local toggleBtn = Instance.new("TextButton", section)
     toggleBtn.Size = UDim2.new(1, 0, 0, 40)
     toggleBtn.Text = "▶ " .. titleText
-    toggleBtn.TextColor3 = Color3.fromRGB(230,230,230)
+    toggleBtn.TextColor3 = Color3.fromRGB(230, 230, 230)
+    toggleBtn.Font = Enum.Font.GothamBold
+    toggleBtn.TextSize = 18
     toggleBtn.BackgroundTransparency = 1
     toggleBtn.TextXAlignment = Enum.TextXAlignment.Left
+    toggleBtn.Name = "Toggle_" .. titleText
 
     local subContainer = Instance.new("Frame", parent)
     subContainer.Size = UDim2.new(1, -20, 0, #subItems * 35)
     subContainer.BackgroundTransparency = 1
     subContainer.Visible = false
+    subContainer.Name = titleText .. "_SubContainer"
 
     local layout = Instance.new("UIListLayout", subContainer)
     layout.Padding = UDim.new(0, 4)
@@ -184,11 +264,16 @@ local function createExpandableSection(parent, titleText, subItems, onClick)
         local subBtn = Instance.new("TextButton", subContainer)
         subBtn.Size = UDim2.new(1, 0, 0, 30)
         subBtn.Text = "   • " .. txt
-        subBtn.TextColor3 = Color3.fromRGB(200,200,200)
+        subBtn.TextColor3 = Color3.fromRGB(200, 200, 200)
+        subBtn.Font = Enum.Font.Gotham
+        subBtn.TextSize = 16
         subBtn.BackgroundTransparency = 0.3
-        subBtn.BackgroundColor3 = Color3.fromRGB(40,40,60)
+        subBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
         subBtn.BorderSizePixel = 0
-        Instance.new("UICorner", subBtn).CornerRadius = UDim.new(0, 6)
+        subBtn.Name = "Sub_" .. txt
+
+        local corner = Instance.new("UICorner", subBtn)
+        corner.CornerRadius = UDim.new(0, 6)
 
         subBtn.MouseButton1Click:Connect(function()
             if onClick then onClick(txt) end
@@ -202,37 +287,76 @@ local function createExpandableSection(parent, titleText, subItems, onClick)
 end
 
 
-local function setContent(titleText, items)
-    clearContent()
+-- == FUNGSI APPLY TEMA == --
+local function applyTheme(themeName)
+    local theme = Themes[themeName]
+    if not theme then return end
 
-    -- Title
-    local contentTitle = Instance.new("TextLabel", content)
+    mainFrame.BackgroundColor3 = theme.Background
+    mainFrame.BackgroundTransparency = theme.BackgroundTransparency
+    UIStroke.Color = theme.Border
+
+    titleBar.BackgroundColor3 = theme.AccentSecondary
+    title.TextColor3 = theme.Text
+    closeBtn.TextColor3 = theme.Accent
+    minBtn.TextColor3 = theme.Text
+    miniIcon.TextColor3 = theme.Accent
+    miniIcon.BackgroundColor3 = theme.AccentSecondary
+
+    -- Kamu bisa tambahkan elemen lain di sini kalau mau tema lebih luas
+end
+
+
+-- == FUNGSI SET CONTENT PER HALAMAN == --
+local function setContent(tabName, items)
+    for name, container in pairs(pageContainers) do
+        container.Parent.Visible = (name == tabName)
+        for _, child in ipairs(container:GetChildren()) do
+            if not child:IsA("UIListLayout") and not child:IsA("UIPadding") then
+                child:Destroy()
+            end
+        end
+    end
+
+    local scroll = pageContainers[tabName]
+    if not scroll then return end
+
+    local contentTitle = Instance.new("TextLabel", scroll)
     contentTitle.Size = UDim2.new(1, -20, 0, 40)
-    contentTitle.Text = titleText
+    contentTitle.Text = tabName
     contentTitle.TextSize = 28
     contentTitle.Font = Enum.Font.SourceSansBold
-    contentTitle.TextColor3 = Color3.fromRGB(255,255,255)
+    contentTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
     contentTitle.BackgroundTransparency = 1
     contentTitle.TextXAlignment = Enum.TextXAlignment.Left
 
-    -- Items
-    for _,txt in ipairs(items) do
-        local item = Instance.new("TextButton", content)
-        item.Size = UDim2.new(1, -20, 0, 35)
-        item.Text = txt.."   >"
-        item.TextColor3 = Color3.fromRGB(240,240,240)
-        item.BackgroundColor3 = Color3.fromRGB(40,40,60)
-        item.BackgroundTransparency = 0.4
-        item.BorderSizePixel = 0
-
-        local UIC = Instance.new("UICorner", item)
-        UIC.CornerRadius = UDim.new(0, 6)
+    if #items == 0 then
+        local emptyLabel = Instance.new("TextLabel", scroll)
+        emptyLabel.Size = UDim2.new(1, -20, 0, 30)
+        emptyLabel.Text = "No items yet..."
+        emptyLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
+        emptyLabel.BackgroundTransparency = 1
+        emptyLabel.Font = Enum.Font.Gotham
+        emptyLabel.TextXAlignment = Enum.TextXAlignment.Left
     end
 end
 
--- MENU DATA
+
+-- == DATA MENU DAN HALAMAN == --
+local menuItems = {
+    "Home",
+    "Main",
+    "Automatically",
+    "Inventory",
+    "Shop",
+    "Webhook",
+    "Misc",
+    "Settings",
+    "Settings UI"
+}
+
 local menuData = {
-    ["Home"] = {},
+    ["Home"] = {"Welcome", "News", "Updates"},
     ["Main"] = {},
     ["Automatically"] = {},
     ["Inventory"] = {},
@@ -243,82 +367,116 @@ local menuData = {
     ["Settings UI"] = {}
 }
 
-local menuItems = {"Home","Main","Automatically","Inventory","Shop","Webhook","Misc","Settings","Settings UI"}
 
--- === MENU INTERAKTIF ===
-local defaultColor = Color3.fromRGB(40,40,60)
-local activeColor = Color3.fromRGB(90,60,150)
-local hoverColor = Color3.fromRGB(70,70,100)
+-- == BUAT FRAME PER HALAMAN == --
+local pageContainers = {}
+
+for _, tabName in ipairs(menuItems) do
+    local pageFrame = Instance.new("Frame", contentContainer)
+    pageFrame.Size = UDim2.new(1, 0, 1, 0)
+    pageFrame.BackgroundTransparency = 1
+    pageFrame.Visible = false
+    pageFrame.Name = tabName .. "_Page"
+
+    local scroll = createScrollContainer(pageFrame)
+    pageContainers[tabName] = scroll
+end
+
+
+-- == MENU SIDEBAR INTERAKTIF == --
+local defaultColor = Color3.fromRGB(40, 40, 60)
+local activeColor = Color3.fromRGB(80, 80, 255)
+local hoverColor = Color3.fromRGB(60, 60, 90)
+
 local menuButtons = {}
 
-for _,v in ipairs(menuItems) do
+for _, tabName in ipairs(menuItems) do
     local btn = Instance.new("TextButton", sidebar)
-    btn.Size = UDim2.new(1, -10, 0, 30)
-    btn.Text = "  "..v
-    btn.TextColor3 = Color3.fromRGB(230,230,230)
+    btn.Size = UDim2.new(1, 0, 0, 30)
+    btn.Text = tabName
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.Font = Enum.Font.Gotham
+    btn.TextSize = 16
     btn.BackgroundColor3 = defaultColor
-    btn.BackgroundTransparency = 0.4
+    btn.BackgroundTransparency = 0.3
     btn.BorderSizePixel = 0
+    btn.Name = "Tab_" .. tabName
 
-    local UIC = Instance.new("UICorner", btn)
-    UIC.CornerRadius = UDim.new(0, 6)
+    local corner = Instance.new("UICorner", btn)
+    corner.CornerRadius = UDim.new(0, 6)
 
-    menuButtons[v] = btn
-
-    -- Hover effect
     btn.MouseEnter:Connect(function()
         if btn.BackgroundColor3 ~= activeColor then
             btn.BackgroundColor3 = hoverColor
         end
     end)
+
     btn.MouseLeave:Connect(function()
         if btn.BackgroundColor3 ~= activeColor then
             btn.BackgroundColor3 = defaultColor
         end
     end)
 
-    -- onClick update content + highlight
     btn.MouseButton1Click:Connect(function()
-        for _,b in pairs(menuButtons) do
+        for _, b in pairs(menuButtons) do
             b.BackgroundColor3 = defaultColor
         end
         btn.BackgroundColor3 = activeColor
-        setContent(v, menuData[v] or {"Empty"})
+        setContent(tabName, menuData[tabName] or {})
     end)
-end
-sidebar.CanvasSize = UDim2.new(0,0,0,#menuItems*35)
 
--- DEFAULT CONTENT & HIGHLIGHT
+    menuButtons[tabName] = btn
+end
+
+
+-- == DEFAULT HALAMAN SAAT START == --
 setContent("Home", menuData["Home"])
-setContent("Settings UI", menuData["Settings UI"])
 menuButtons["Home"].BackgroundColor3 = activeColor
 
-local settingsScroll = pageContainers["Settings UI"]
 
--- TEMA PILIHAN
+-- == INJECT KONTEN KE HALAMAN HOME == --
+
+-- == INJECT KONTEN KE HALAMAN MAIN == --
+
+-- == INJECT KONTEN HALAMAN LAIN NYA YANG AKAN DI TAMBAHKAN NANTI == --
+
+-- == INJECT KONTEN KE SETTINGS UI (THEMES) == --
+local settingsScroll = pageContainers["Settings UI"]
 
 createExpandableSection(settingsScroll, "Themes", {
     "Glassy Dark",
     "Light",
     "Ocean Blue",
-    "Crimson Red"
+    "Crimson Red",
+    "Midnight Purple",
+    "Mint Breeze",
+    "Cyber Neon",
+    "Retro Sunset",
+    "Forest Night",
+    "Mono Gray"
 }, function(selectedTheme)
     applyTheme(selectedTheme)
 end)
 
 
--- MINIMIZE ICON
+-- == MINIMIZE ICON == --
 local miniIcon = Instance.new("TextButton", gui)
-miniIcon.Size = UDim2.new(0, 50, 0, 50)
-miniIcon.Position = UDim2.new(0.1, 0, 0.8, 0)
-miniIcon.Text = "📜"
+miniIcon.Size = UDim2.new(0, 40, 0, 40)
+miniIcon.Position = UDim2.new(0, 10, 1, -50)
+miniIcon.Text = "☰"
+miniIcon.TextColor3 = Color3.fromRGB(255, 255, 255)
+miniIcon.Font = Enum.Font.GothamBold
+miniIcon.TextSize = 22
+miniIcon.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
+miniIcon.BackgroundTransparency = 0.2
 miniIcon.Visible = false
-miniIcon.BackgroundTransparency = 0.5
-miniIcon.BackgroundColor3 = Color3.fromRGB(50,50,50)
-miniIcon.Active = true
-miniIcon.Draggable = true
+miniIcon.Name = "MiniIcon"
 
--- BUTTON FUNCTIONS
+local miniCorner = Instance.new("UICorner", miniIcon)
+miniCorner.CornerRadius = UDim.new(0, 8)
+
+
+-- == FUNGSI TOMBOL CLOSE & MINIMIZE == --
 closeBtn.MouseButton1Click:Connect(function()
     gui:Destroy()
 end)
@@ -333,7 +491,24 @@ miniIcon.MouseButton1Click:Connect(function()
     miniIcon.Visible = false
 end)
 
--- Update scroll content otomatis
-listLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-    content.CanvasSize = UDim2.new(0,0,0,listLayout.AbsoluteContentSize.Y)
-end)
+
+-- == UPDATE SCROLL OTOMATIS == --
+for _, scroll in pairs(pageContainers) do
+    local layout = scroll:FindFirstChildWhichIsA("UIListLayout")
+    if layout then
+        layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+            scroll.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 20)
+        end)
+    end
+end
+
+
+-- == LOADER SYSTEM == --
+
+-- == KEY SYSTEM == --
+
+-- == OBJECT TELEPORTER == --
+
+-- == AUTO PLAY PIANO == --
+
+-- == SCENE SCANNER == --
