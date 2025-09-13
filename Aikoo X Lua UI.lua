@@ -49,39 +49,18 @@ title.TextXAlignment = Enum.TextXAlignment.Left
 
 -- == TOMBOL CLOSE & MINIMIZE == --
 local closeBtn = Instance.new("TextButton", titleBar)
-closeBtn.Size = UDim2.new(0, 40, 1, 0)
-closeBtn.Position = UDim2.new(1, -40, 0, 0)
-closeBtn.Text = "✕"
-closeBtn.TextColor3 = Color3.fromRGB(255, 80, 80)
-closeBtn.Font = Enum.Font.GothamBold
-closeBtn.TextSize = 20
+closeBtn.Size = UDim2.new(0, 30, 1, 0)
+closeBtn.Position = UDim2.new(1, -30, 0, 0)
+closeBtn.Text = "X"
+closeBtn.TextColor3 = Color3.fromRGB(255, 100, 100)
 closeBtn.BackgroundTransparency = 1
-closeBtn.Name = "CloseButton"
 
 local minBtn = Instance.new("TextButton", titleBar)
-minBtn.Size = UDim2.new(0, 40, 1, 0)
-minBtn.Position = UDim2.new(1, -80, 0, 0)
-minBtn.Text = "–"
-minBtn.TextColor3 = Color3.fromRGB(200, 200, 200)
-minBtn.Font = Enum.Font.GothamBold
-minBtn.TextSize = 20
+minBtn.Size = UDim2.new(0, 30, 1, 0)
+minBtn.Position = UDim2.new(1, -60, 0, 0)
+minBtn.Text = "-"
+minBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 minBtn.BackgroundTransparency = 1
-minBtn.Name = "MinimizeButton"
-
-local miniIcon = Instance.new("TextButton", gui)
-miniIcon.Size = UDim2.new(0, 40, 0, 40)
-miniIcon.Position = UDim2.new(0, 10, 1, -50)
-miniIcon.Text = "☰"
-miniIcon.TextColor3 = Color3.fromRGB(255, 255, 255)
-miniIcon.Font = Enum.Font.GothamBold
-miniIcon.TextSize = 22
-miniIcon.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
-miniIcon.BackgroundTransparency = 0.2
-miniIcon.Visible = false
-miniIcon.Name = "MiniIcon"
-
-local miniCorner = Instance.new("UICorner", miniIcon)
-miniCorner.CornerRadius = UDim.new(0, 8)
 
 
 -- == SIDEBAR MENU == --
@@ -235,7 +214,7 @@ end
 
 -- == FUNGSI EXPANDABLE SECTION (NESTED MENU) == --
 local function createExpandableSection(parent, titleText, subItems, onClick)
-    local section = Instance.new("Frame", parent)
+    local subContainer = Instance.new("Frame", section)
     section.Size = UDim2.new(1, -20, 0, 40)
     section.BackgroundTransparency = 1
     section.Name = titleText .. "_Section"
@@ -303,6 +282,13 @@ local function applyTheme(themeName)
     miniIcon.TextColor3 = theme.Accent
     miniIcon.BackgroundColor3 = theme.AccentSecondary
 
+    -- Update semua tombol sidebar
+    for _, btn in pairs(menuButtons) do
+        btn.BackgroundColor3 = theme.AccentSecondary
+        btn.TextColor3 = theme.Text
+    end
+
+
     -- Kamu bisa tambahkan elemen lain di sini kalau mau tema lebih luas
 end
 
@@ -310,7 +296,7 @@ end
 -- == FUNGSI SET CONTENT PER HALAMAN == --
 local function setContent(tabName, items)
     for name, container in pairs(pageContainers) do
-        container.Parent.Visible = (name == tabName)
+        container.Parent.Parent.Visible = (name == tabName)
         for _, child in ipairs(container:GetChildren()) do
             if not child:IsA("UIListLayout") and not child:IsA("UIPadding") then
                 child:Destroy()
@@ -497,7 +483,6 @@ for _, scroll in pairs(pageContainers) do
     local layout = scroll:FindFirstChildWhichIsA("UIListLayout")
     if layout then
         layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-            scroll.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 20)
         end)
     end
 end
