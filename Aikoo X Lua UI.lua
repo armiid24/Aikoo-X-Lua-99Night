@@ -347,7 +347,7 @@ end
 
 -- == DATA MENU DAN HALAMAN == --
 local menuItems = {
-    "Home","Main","Automatically","Inventory","Shop","Webhook","Misc","Settings","Settings UI"
+    "Home","Main","Automatically","Inventory","Shop","Misc","Settings","Settings UI"
 }
 
 local menuData = {
@@ -356,7 +356,6 @@ local menuData = {
     ["Automatically"] = {},
     ["Inventory"] = {},
     ["Shop"] = {},
-    ["Webhook"] = {},
     ["Misc"] = {},
     ["Settings"] = {},
     ["Settings UI"] = {}
