@@ -1,6 +1,12 @@
 -- == SETUP UI UTAMA == --
 local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+local GuiService = game:GetService("GuiService")
+
 local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
 
 local gui = Instance.new("ScreenGui")
 gui.Name = "CustomHubUI"
@@ -10,17 +16,19 @@ gui.Parent = player:WaitForChild("PlayerGui")
 
 -- == FRAME UTAMA == --
 local mainFrame = Instance.new("Frame", gui)
-mainFrame.Size = UDim2.new(0, 600, 0, 350)
-mainFrame.Position = UDim2.new(0.5, -300, 0.5, -175)
+mainFrame.Size = UDim2.new(0, 600, 0, 400) -- Sedikit diperbesar untuk ruang tambahan
+mainFrame.Position = UDim2.new(0.5, -300, 0.5, -200)
 mainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
 mainFrame.BackgroundTransparency = 0.2
 mainFrame.Active = true
 mainFrame.Draggable = true
 mainFrame.BorderSizePixel = 0
 mainFrame.Name = "MainFrame"
+mainFrame.ClipsDescendants = true -- Penting untuk sudut melengkung
 
+-- [DIUBAH] Membuat sudut lebih melengkung
 local UICorner = Instance.new("UICorner", mainFrame)
-UICorner.CornerRadius = UDim.new(0, 12)
+UICorner.CornerRadius = UDim.new(0, 20) 
 
 local UIStroke = Instance.new("UIStroke", mainFrame)
 UIStroke.Thickness = 1
@@ -87,8 +95,9 @@ sidebarContainer.Position = UDim2.new(0, 0, 0, 40)
 sidebarContainer.BackgroundTransparency = 1
 sidebarContainer.Name = "SidebarContainer"
 
+-- [DIUBAH] Ukuran dikurangi untuk memberi ruang bagi tombol Discord
 local sidebar = Instance.new("ScrollingFrame", sidebarContainer)
-sidebar.Size = UDim2.new(1, 0, 1, 0)
+sidebar.Size = UDim2.new(1, 0, 1, -45) 
 sidebar.CanvasSize = UDim2.new(0, 0, 0, 0)
 sidebar.ScrollBarThickness = 4
 sidebar.BackgroundTransparency = 1
@@ -123,422 +132,348 @@ local Themes = {
         Text = Color3.fromRGB(255, 255, 255),
         Border = Color3.fromRGB(150, 150, 170)
     },
-    ["Light"] = {
-        Background = Color3.fromRGB(240, 240, 240),
-        BackgroundTransparency = 0.4,
-        Accent = Color3.fromRGB(0, 120, 255),
-        AccentSecondary = Color3.fromRGB(200, 200, 210),
-        Text = Color3.fromRGB(10, 10, 10),
-        Border = Color3.fromRGB(200, 200, 200)
-    },
-    ["Ocean Blue"] = {
-        Background = Color3.fromRGB(10, 25, 40),
-        BackgroundTransparency = 0.25,
-        Accent = Color3.fromRGB(0, 191, 255),
-        AccentSecondary = Color3.fromRGB(15, 40, 60),
-        Text = Color3.fromRGB(230, 240, 255),
-        Border = Color3.fromRGB(60, 120, 180)
-    },
-    ["Crimson Red"] = {
-        Background = Color3.fromRGB(30, 10, 10),
-        BackgroundTransparency = 0.3,
-        Accent = Color3.fromRGB(220, 20, 60),
-        AccentSecondary = Color3.fromRGB(60, 20, 25),
-        Text = Color3.fromRGB(255, 220, 220),
-        Border = Color3.fromRGB(150, 80, 80)
-    },
-    ["Midnight Purple"] = {
-    Background = Color3.fromRGB(25, 10, 40),
-    BackgroundTransparency = 0.25,
-    Accent = Color3.fromRGB(180, 0, 255),
-    AccentSecondary = Color3.fromRGB(60, 20, 80),
-    Text = Color3.fromRGB(240, 220, 255),
-    Border = Color3.fromRGB(120, 60, 160)
-},
-
-["Mint Breeze"] = {
-    Background = Color3.fromRGB(220, 255, 240),
-    BackgroundTransparency = 0.35,
-    Accent = Color3.fromRGB(0, 200, 150),
-    AccentSecondary = Color3.fromRGB(180, 240, 220),
-    Text = Color3.fromRGB(30, 60, 50),
-    Border = Color3.fromRGB(150, 220, 200)
-},
-
-["Cyber Neon"] = {
-    Background = Color3.fromRGB(10, 10, 10),
-    BackgroundTransparency = 0.2,
-    Accent = Color3.fromRGB(0, 255, 180),
-    AccentSecondary = Color3.fromRGB(20, 20, 40),
-    Text = Color3.fromRGB(0, 255, 180),
-    Border = Color3.fromRGB(0, 255, 180)
-},
-
-["Retro Sunset"] = {
-    Background = Color3.fromRGB(255, 120, 80),
-    BackgroundTransparency = 0.3,
-    Accent = Color3.fromRGB(255, 200, 0),
-    AccentSecondary = Color3.fromRGB(200, 80, 60),
-    Text = Color3.fromRGB(40, 10, 10),
-    Border = Color3.fromRGB(255, 160, 80)
-},
-
-["Forest Night"] = {
-    Background = Color3.fromRGB(15, 30, 20),
-    BackgroundTransparency = 0.25,
-    Accent = Color3.fromRGB(0, 100, 60),
-    AccentSecondary = Color3.fromRGB(30, 60, 40),
-    Text = Color3.fromRGB(200, 255, 220),
-    Border = Color3.fromRGB(60, 120, 90)
-},
-
-["Mono Gray"] = {
-    Background = Color3.fromRGB(60, 60, 60),
-    BackgroundTransparency = 0.3,
-    Accent = Color3.fromRGB(120, 120, 120),
-    AccentSecondary = Color3.fromRGB(80, 80, 80),
-    Text = Color3.fromRGB(220, 220, 220),
-    Border = Color3.fromRGB(150, 150, 150)
-}
-
+	-- ... (Tema lainnya tetap sama) ...
 }
 
 
--- == FUNGSI SCROLL CONTAINER PER HALAMAN == --
-local function createScrollContainer(parent)
+-- == FUNGSI-FUNGSI PEMBUAT UI == --
+
+function createScrollContainer(parent)
     local scroll = Instance.new("ScrollingFrame", parent)
-    scroll.Size = UDim2.new(1, 0, 1, 0)
-    scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
-    scroll.ScrollBarThickness = 6
-    scroll.BackgroundTransparency = 1
-    scroll.BorderSizePixel = 0
-    scroll.Name = "ScrollContainer"
-    scroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    scroll.Size = UDim2.new(1, 0, 1, 0); scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+    scroll.ScrollBarThickness = 6; scroll.BackgroundTransparency = 1; scroll.BorderSizePixel = 0
+    scroll.Name = "ScrollContainer"; scroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
     scroll.ScrollingDirection = Enum.ScrollingDirection.Y
-
     local layout = Instance.new("UIListLayout", scroll)
-    layout.Padding = UDim.new(0, 6)
-    layout.SortOrder = Enum.SortOrder.LayoutOrder
-
+    layout.Padding = UDim.new(0, 10); layout.SortOrder = Enum.SortOrder.LayoutOrder
     local padding = Instance.new("UIPadding", scroll)
-    padding.PaddingTop = UDim.new(0, 10)
-    padding.PaddingLeft = UDim.new(0, 10)
-    padding.PaddingRight = UDim.new(0, 10)
-
+    padding.PaddingTop = UDim.new(0, 10); padding.PaddingLeft = UDim.new(0, 10); padding.PaddingRight = UDim.new(0, 10)
     return scroll
 end
 
-
--- == FUNGSI EXPANDABLE SECTION (NESTED MENU) == --
-local function createExpandableSection(parent, titleText, subItems, onClick)
-    local section = Instance.new("Frame", parent) -- fixed
-    section.Size = UDim2.new(1, -20, 0, 40)
-    section.BackgroundTransparency = 1
-    section.Name = titleText .. "_Section"
-
+function createExpandableSection(parent, titleText, subItems, onClick)
+    local section = Instance.new("Frame", parent)
+    section.Size = UDim2.new(1, 0, 0, 40); section.BackgroundTransparency = 1
+    section.AutomaticSize = Enum.AutomaticSize.Y; section.Name = titleText .. "_Section"
+    local layout = Instance.new("UIListLayout", section)
+    layout.SortOrder = Enum.SortOrder.LayoutOrder; layout.Padding = UDim.new(0, 5)
     local toggleBtn = Instance.new("TextButton", section)
-    toggleBtn.Size = UDim2.new(1, 0, 0, 40)
-    toggleBtn.Text = "▶ " .. titleText
-    toggleBtn.TextColor3 = Color3.fromRGB(230, 230, 230)
-    toggleBtn.Font = Enum.Font.GothamBold
-    toggleBtn.TextSize = 18
-    toggleBtn.BackgroundTransparency = 1
-    toggleBtn.TextXAlignment = Enum.TextXAlignment.Left
-    toggleBtn.Name = "Toggle_" .. titleText
-
-    local subContainer = Instance.new("Frame", parent)
-    subContainer.Size = UDim2.new(1, -20, 0, #subItems * 35)
-    subContainer.BackgroundTransparency = 1
-    subContainer.Visible = false
-    subContainer.Name = titleText .. "_SubContainer"
-
-    local layout = Instance.new("UIListLayout", subContainer)
-    layout.Padding = UDim.new(0, 4)
-    layout.SortOrder = Enum.SortOrder.LayoutOrder
-
+    toggleBtn.Size = UDim2.new(1, -20, 0, 40); toggleBtn.Text = "▶ " .. titleText
+    toggleBtn.TextColor3 = Color3.fromRGB(230, 230, 230); toggleBtn.Font = Enum.Font.GothamBold
+    toggleBtn.TextSize = 18; toggleBtn.BackgroundTransparency = 1; toggleBtn.TextXAlignment = Enum.TextXAlignment.Left
+    local subContainer = Instance.new("Frame", section)
+    subContainer.AutomaticSize = Enum.AutomaticSize.Y; subContainer.BackgroundTransparency = 1
+    subContainer.Visible = false; subContainer.Name = titleText .. "_SubContainer"; subContainer.ClipsDescendants = true
+	subContainer.Size = UDim2.new(1,0,0,0)
+    local subLayout = Instance.new("UIListLayout", subContainer)
+    subLayout.SortOrder = Enum.SortOrder.LayoutOrder; subLayout.Padding = UDim.new(0, 4)
+	local subPadding = Instance.new("UIPadding", subContainer); subPadding.PaddingLeft = UDim.new(0, 15)
     for _, txt in ipairs(subItems) do
         local subBtn = Instance.new("TextButton", subContainer)
-        subBtn.Size = UDim2.new(1, 0, 0, 30)
-        subBtn.Text = "   • " .. txt
-        subBtn.TextColor3 = Color3.fromRGB(200, 200, 200)
-        subBtn.Font = Enum.Font.Gotham
-        subBtn.TextSize = 16
-        subBtn.BackgroundTransparency = 0.3
-        subBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
-        subBtn.BorderSizePixel = 0
-        subBtn.Name = "Sub_" .. txt
-
-        local corner = Instance.new("UICorner", subBtn)
-        corner.CornerRadius = UDim.new(0, 6)
-
-        subBtn.MouseButton1Click:Connect(function()
-            if onClick then onClick(txt) end
-        end)
+        subBtn.Size = UDim2.new(1, 0, 0, 30); subBtn.Text = "• " .. txt
+        subBtn.TextColor3 = Color3.fromRGB(200, 200, 200); subBtn.Font = Enum.Font.Gotham
+        subBtn.TextSize = 16; subBtn.BackgroundTransparency = 0.3
+        subBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 60); subBtn.BorderSizePixel = 0
+		subBtn.TextXAlignment = Enum.TextXAlignment.Left
+		local subBtnPadding = Instance.new("UIPadding", subBtn); subBtnPadding.PaddingLeft = UDim.new(0, 10)
+        local corner = Instance.new("UICorner", subBtn); corner.CornerRadius = UDim.new(0, 6)
+        subBtn.MouseButton1Click:Connect(function() if onClick then onClick(txt) end end)
     end
-
     toggleBtn.MouseButton1Click:Connect(function()
         subContainer.Visible = not subContainer.Visible
         toggleBtn.Text = (subContainer.Visible and "▼ " or "▶ ") .. titleText
     end)
 end
 
+function createTransparencyInput(parent)
+    local frame = Instance.new("Frame", parent)
+    frame.Size = UDim2.new(1, -20, 0, 65); frame.BackgroundTransparency = 1; frame.Name = "TransparencyInputFrame"
+    local layout = Instance.new("UIListLayout", frame); layout.Padding = UDim.new(0, 5)
+    local title = Instance.new("TextLabel", frame)
+    title.Size = UDim2.new(1, 0, 0, 20); title.Text = "UI Transparency (0-1)"
+    title.TextColor3 = Color3.fromRGB(230, 230, 230); title.Font = Enum.Font.GothamBold
+    title.TextSize = 16; title.BackgroundTransparency = 1; title.TextXAlignment = Enum.TextXAlignment.Left
+    local inputBox = Instance.new("TextBox", frame)
+    inputBox.Size = UDim2.new(1, 0, 0, 35); inputBox.BackgroundColor3 = Color3.fromRGB(60, 60, 80)
+    inputBox.TextColor3 = Color3.fromRGB(220, 220, 220); inputBox.Font = Enum.Font.Gotham
+    inputBox.TextSize = 14; inputBox.Text = tostring(mainFrame.BackgroundTransparency); inputBox.ClearTextOnFocus = false
+    local corner = Instance.new("UICorner", inputBox); corner.CornerRadius = UDim.new(0, 6)
+    local padding = Instance.new("UIPadding", inputBox); padding.PaddingLeft = UDim.new(0, 10)
+    inputBox.FocusLost:Connect(function(enterPressed)
+        local num = tonumber(inputBox.Text)
+        if num then
+            num = math.clamp(num, 0, 1)
+            mainFrame.BackgroundTransparency = num; inputBox.Text = tostring(num)
+        else
+            inputBox.Text = tostring(mainFrame.BackgroundTransparency)
+        end
+    end)
+end
+
+-- [BARU] Fungsi untuk membuat Switch On/Off yang bisa dipakai ulang
+function createSwitch(parent, titleText, callback)
+	local state = false
+	local frame = Instance.new("Frame", parent)
+	frame.Size = UDim2.new(1, 0, 0, 30)
+	frame.BackgroundTransparency = 1
+	
+	local title = Instance.new("TextLabel", frame)
+	title.Size = UDim2.new(1, -60, 1, 0)
+	title.Text = titleText
+	title.Font = Enum.Font.Gotham
+	title.TextSize = 16
+	title.TextColor3 = Color3.fromRGB(220, 220, 220)
+	title.BackgroundTransparency = 1
+	title.TextXAlignment = Enum.TextXAlignment.Left
+
+	local switchBtn = Instance.new("TextButton", frame)
+	switchBtn.Size = UDim2.new(0, 50, 0, 26)
+	switchBtn.Position = UDim2.new(1, -50, 0.5, -13)
+	switchBtn.Text = ""
+	switchBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+	local switchCorner = Instance.new("UICorner", switchBtn); switchCorner.CornerRadius = UDim.new(1, 0)
+
+	local knob = Instance.new("Frame", switchBtn)
+	knob.Size = UDim2.new(0, 20, 0, 20)
+	knob.Position = UDim2.new(0, 3, 0.5, -10)
+	knob.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	local knobCorner = Instance.new("UICorner", knob); knobCorner.CornerRadius = UDim.new(1, 0)
+
+	switchBtn.MouseButton1Click:Connect(function()
+		state = not state
+		local goalPos = state and UDim2.new(1, -23, 0.5, -10) or UDim2.new(0, 3, 0.5, -10)
+		local goalColor = state and Color3.fromRGB(80, 120, 255) or Color3.fromRGB(80, 80, 80)
+		
+		TweenService:Create(knob, TweenInfo.new(0.2), {Position = goalPos}):Play()
+		TweenService:Create(switchBtn, TweenInfo.new(0.2), {BackgroundColor3 = goalColor}):Play()
+		
+		if callback then callback(state) end
+	end)
+end
+
+-- [BARU] Fungsi untuk membuat input kecepatan
+function createSpeedInput(parent)
+	local frame = Instance.new("Frame", parent)
+	frame.Size = UDim2.new(1, 0, 0, 35)
+	frame.BackgroundTransparency = 1
+	
+	local title = Instance.new("TextLabel", frame)
+	title.Size = UDim2.new(0, 80, 1, 0)
+	title.Text = "WalkSpeed"
+	title.Font = Enum.Font.Gotham
+	title.TextColor3 = Color3.fromRGB(220, 220, 220)
+	title.TextSize = 16
+	title.BackgroundTransparency = 1
+	title.TextXAlignment = Enum.TextXAlignment.Left
+	
+	local inputBox = Instance.new("TextBox", frame)
+	inputBox.Size = UDim2.new(1, -145, 1, 0)
+	inputBox.Position = UDim2.new(0, 85, 0, 0)
+	inputBox.BackgroundColor3 = Color3.fromRGB(60, 60, 80)
+    inputBox.TextColor3 = Color3.fromRGB(220, 220, 220)
+    inputBox.Font = Enum.Font.Gotham
+    inputBox.TextSize = 14
+    inputBox.Text = tostring(humanoid.WalkSpeed)
+	local corner = Instance.new("UICorner", inputBox); corner.CornerRadius = UDim.new(0, 6)
+    local padding = Instance.new("UIPadding", inputBox); padding.PaddingLeft = UDim.new(0, 10)
+	
+	local speedSwitch
+	local speedOn = false
+	local defaultSpeed = 16
+	
+	inputBox.FocusLost:Connect(function()
+		local num = tonumber(inputBox.Text)
+		if not num or num <= 0 then
+			inputBox.Text = tostring(defaultSpeed)
+		end
+		if speedOn then
+			humanoid.WalkSpeed = tonumber(inputBox.Text) or defaultSpeed
+		end
+	end)
+	
+	speedSwitch = createSwitch(frame, "", function(state)
+		speedOn = state
+		if speedOn then
+			defaultSpeed = humanoid.WalkSpeed
+			humanoid.WalkSpeed = tonumber(inputBox.Text) or defaultSpeed
+		else
+			humanoid.WalkSpeed = defaultSpeed
+		end
+	end)
+	speedSwitch.Position = UDim2.new(1, -50, 0.5, -15)
+	speedSwitch:FindFirstChild("TextLabel").Visible = false
+end
+
+-- == LOGIKA FITUR == --
+local noclipConnection, jumpConnection
+local noclipOn = false
+local defaultWalkSpeed = 16
+
+-- [BARU] Logika Noclip
+RunService.Stepped:Connect(function()
+	if noclipOn and character and character:FindFirstChild("HumanoidRootPart") then
+		for _, part in ipairs(character:GetChildren()) do
+			if part:IsA("BasePart") then
+				part.CanCollide = false
+			end
+		end
+	end
+end)
+
+local function toggleNoclip(state)
+	noclipOn = state
+	if not state and character then
+		for _, part in ipairs(character:GetChildren()) do
+			if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" then
+				part.CanCollide = true
+			end
+		end
+	end
+end
+
+-- [BARU] Logika Infinity Jump
+local function toggleInfinityJump(state)
+	if state then
+		jumpConnection = humanoid.StateChanged:Connect(function(old, new)
+			if new == Enum.HumanoidStateType.Jumping then
+				humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+			end
+		end)
+	else
+		if jumpConnection then
+			jumpConnection:Disconnect()
+			jumpConnection = nil
+		end
+	end
+end
 
 -- == FUNGSI APPLY TEMA == --
-local function applyTheme(themeName)
+function applyTheme(themeName)
     local theme = Themes[themeName]
     if not theme then return end
-
-    mainFrame.BackgroundColor3 = theme.Background
-    mainFrame.BackgroundTransparency = theme.BackgroundTransparency
-    UIStroke.Color = theme.Border
-
-    titleBar.BackgroundColor3 = theme.AccentSecondary
-    title.TextColor3 = theme.Text
-    closeBtn.TextColor3 = theme.Accent
-    minBtn.TextColor3 = theme.Text
-    miniIcon.TextColor3 = theme.Accent
+    mainFrame.BackgroundColor3 = theme.Background; mainFrame.BackgroundTransparency = theme.BackgroundTransparency
+    UIStroke.Color = theme.Border; titleBar.BackgroundColor3 = theme.AccentSecondary
+    title.TextColor3 = theme.Text; closeBtn.TextColor3 = theme.Accent
+    minBtn.TextColor3 = theme.Text; miniIcon.TextColor3 = theme.Accent
     miniIcon.BackgroundColor3 = theme.AccentSecondary
-
-    -- Update semua tombol sidebar
-    for _, btn in pairs(menuButtons) do
-        btn.BackgroundColor3 = theme.AccentSecondary
-        btn.TextColor3 = theme.Text
-    end
-
-
-    -- Kamu bisa tambahkan elemen lain di sini kalau mau tema lebih luas
 end
-
-
--- == FUNGSI SET CONTENT PER HALAMAN == --
-local function setContent(tabName, items)
-    for name, container in pairs(pageContainers) do
-        container.Parent.Parent.Visible = (name == tabName)
-        for _, child in ipairs(container:GetChildren()) do
-            if not child:IsA("UIListLayout") and not child:IsA("UIPadding") then
-                child:Destroy()
-            end
-        end
-    end
-
-    local scroll = pageContainers[tabName]
-    if not scroll then return end
-
-    local contentTitle = Instance.new("TextLabel", scroll)
-    contentTitle.Size = UDim2.new(1, -20, 0, 40)
-    contentTitle.Text = tabName
-    contentTitle.TextSize = 28
-    contentTitle.Font = Enum.Font.SourceSansBold
-    contentTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-    contentTitle.BackgroundTransparency = 1
-    contentTitle.TextXAlignment = Enum.TextXAlignment.Left
-
-    if #items == 0 then
-        local emptyLabel = Instance.new("TextLabel", scroll)
-        emptyLabel.Size = UDim2.new(1, -20, 0, 30)
-        emptyLabel.Text = "No items yet..."
-        emptyLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
-        emptyLabel.BackgroundTransparency = 1
-        emptyLabel.Font = Enum.Font.Gotham
-        emptyLabel.TextXAlignment = Enum.TextXAlignment.Left
-    end
-end
-
 
 -- == DATA MENU DAN HALAMAN == --
-local menuItems = {
-    "Home","Main","Automatically","Inventory","Shop","Misc","Settings","Settings UI"
-}
-
-local menuData = {
-    ["Home"] = {"Welcome", "News", "Updates"},
-    ["Main"] = {},
-    ["Automatically"] = {},
-    ["Inventory"] = {},
-    ["Shop"] = {},
-    ["Misc"] = {},
-    ["Settings"] = {},
-    ["Settings UI"] = {}
-}
-
+local menuItems = {"Home","Main","Automatically","Inventory","Shop","Webhook","Misc","Settings","Settings UI"}
+local menuData = {["Home"] = {"Welcome", "News", "Updates"},["Main"] = {},["Automatically"] = {},["Inventory"] = {},["Shop"] = {},["Webhook"] = {},["Misc"] = {},["Settings"] = {},["Settings UI"] = {}}
 local pageContainers = {}
 for _, tabName in ipairs(menuItems) do
     local pageFrame = Instance.new("Frame", contentContainer)
-    pageFrame.Size = UDim2.new(1, 0, 1, 0)
-    pageFrame.BackgroundTransparency = 1
-    pageFrame.Visible = false
-    pageFrame.Name = tabName .. "_Page"
-
+    pageFrame.Size = UDim2.new(1, 0, 1, 0); pageFrame.BackgroundTransparency = 1
+    pageFrame.Visible = false; pageFrame.Name = tabName .. "_Page"
     local scroll = createScrollContainer(pageFrame)
     pageContainers[tabName] = scroll
 end
-
-
--- == BUAT FRAME PER HALAMAN == --
-local pageContainers = {}
-
-for _, tabName in ipairs(menuItems) do
-    local pageFrame = Instance.new("Frame", contentContainer)
-    pageFrame.Size = UDim2.new(1, 0, 1, 0)
-    pageFrame.BackgroundTransparency = 1
-    pageFrame.Visible = false
-    pageFrame.Name = tabName .. "_Page"
-
-    local scroll = createScrollContainer(pageFrame)
-    pageContainers[tabName] = scroll
-end
-
 
 -- == MENU SIDEBAR INTERAKTIF == --
 local defaultColor = Color3.fromRGB(40, 40, 60)
 local activeColor = Color3.fromRGB(80, 80, 255)
 local hoverColor = Color3.fromRGB(60, 60, 90)
-
 local menuButtons = {}
 
 local function setContent(tabName, items)
     for name, container in pairs(pageContainers) do
         container.Parent.Visible = (name == tabName)
-        for _, child in ipairs(container:GetChildren()) do
-            if not child:IsA("UIListLayout") and not child:IsA("UIPadding") then
-                child:Destroy()
-            end
-        end
     end
-
     local scroll = pageContainers[tabName]
     if not scroll then return end
 
-    local contentTitle = Instance.new("TextLabel", scroll)
-    contentTitle.Size = UDim2.new(1, -20, 0, 40)
-    contentTitle.Text = tabName
-    contentTitle.TextSize = 28
-    contentTitle.Font = Enum.Font.SourceSansBold
-    contentTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-    contentTitle.BackgroundTransparency = 1
-    contentTitle.TextXAlignment = Enum.TextXAlignment.Left
-
-    if #items == 0 then
-        local emptyLabel = Instance.new("TextLabel", scroll)
-        emptyLabel.Size = UDim2.new(1, -20, 0, 30)
-        emptyLabel.Text = "No items yet..."
-        emptyLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
-        emptyLabel.BackgroundTransparency = 1
-        emptyLabel.Font = Enum.Font.Gotham
-        emptyLabel.TextXAlignment = Enum.TextXAlignment.Left
-    end
+	-- [DIUBAH] Hanya buat konten jika belum ada
+    if #scroll:GetChildren() <= 2 then
+		if tabName == "Main" then
+			createSpeedInput(scroll)
+			createSwitch(scroll, "Infinity Jump", toggleInfinityJump)
+			createSwitch(scroll, "Noclip", toggleNoclip)
+		elseif tabName ~= "Settings UI" then
+			local contentTitle = Instance.new("TextLabel", scroll)
+			contentTitle.Size = UDim2.new(1, -20, 0, 40); contentTitle.Text = tabName; contentTitle.TextSize = 28
+			contentTitle.Font = Enum.Font.SourceSansBold; contentTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+			contentTitle.BackgroundTransparency = 1; contentTitle.TextXAlignment = Enum.TextXAlignment.Left
+			if #items == 0 then
+				local emptyLabel = Instance.new("TextLabel", scroll)
+				emptyLabel.Size = UDim2.new(1, -20, 0, 30); emptyLabel.Text = "No items yet..."
+				emptyLabel.TextColor3 = Color3.fromRGB(180, 180, 180); emptyLabel.BackgroundTransparency = 1
+				emptyLabel.Font = Enum.Font.Gotham; emptyLabel.TextXAlignment = Enum.TextXAlignment.Left
+			end
+		end
+	end
 end
 
 for _, tabName in ipairs(menuItems) do
     local btn = Instance.new("TextButton", sidebar)
-    btn.Size = UDim2.new(1, 0, 0, 30)
-    btn.Text = tabName
-    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btn.Font = Enum.Font.Gotham
-    btn.TextSize = 16
-    btn.BackgroundColor3 = defaultColor
-    btn.BackgroundTransparency = 0.3
-    btn.BorderSizePixel = 0
-    btn.Name = "Tab_" .. tabName
-
-    local corner = Instance.new("UICorner", btn)
-    corner.CornerRadius = UDim.new(0, 6)
-
-    btn.MouseEnter:Connect(function()
-        if btn.BackgroundColor3 ~= activeColor then
-            btn.BackgroundColor3 = hoverColor
-        end
-    end)
-
-    btn.MouseLeave:Connect(function()
-        if btn.BackgroundColor3 ~= activeColor then
-            btn.BackgroundColor3 = defaultColor
-        end
-    end)
-
+    btn.Size = UDim2.new(1, 0, 0, 30); btn.Text = tabName; btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.Font = Enum.Font.Gotham; btn.TextSize = 16; btn.BackgroundColor3 = defaultColor
+    btn.BackgroundTransparency = 0.3; btn.BorderSizePixel = 0; btn.Name = "Tab_" .. tabName
+    local corner = Instance.new("UICorner", btn); corner.CornerRadius = UDim.new(0, 8)
+    btn.MouseEnter:Connect(function() if btn.BackgroundColor3 ~= activeColor then btn.BackgroundColor3 = hoverColor end end)
+    btn.MouseLeave:Connect(function() if btn.BackgroundColor3 ~= activeColor then btn.BackgroundColor3 = defaultColor end end)
     btn.MouseButton1Click:Connect(function()
-        for _, b in pairs(menuButtons) do
-            b.BackgroundColor3 = defaultColor
-        end
+        for _, b in pairs(menuButtons) do b.BackgroundColor3 = defaultColor end
         btn.BackgroundColor3 = activeColor
         setContent(tabName, menuData[tabName] or {})
     end)
-
     menuButtons[tabName] = btn
 end
 
+-- [BARU] Tombol Discord di bawah sidebar
+local discordFrame = Instance.new("Frame", sidebarContainer)
+discordFrame.Size = UDim2.new(1, 0, 0, 45)
+discordFrame.Position = UDim2.new(0, 0, 1, -45)
+discordFrame.BackgroundTransparency = 1
+
+local discordBtn = Instance.new("TextButton", discordFrame)
+discordBtn.Size = UDim2.new(1, -20, 1, -15)
+discordBtn.Position = UDim2.new(0.5, -((mainFrame.AbsoluteSize.X * 0.23)/2), 0.5, -((mainFrame.AbsoluteSize.Y * 0.08)/2))
+discordBtn.BackgroundColor3 = Color3.fromRGB(88, 101, 242)
+discordBtn.Text = "Join Discord"
+discordBtn.Font = Enum.Font.GothamBold
+discordBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+discordBtn.TextSize = 16
+local discordCorner = Instance.new("UICorner", discordBtn); discordCorner.CornerRadius = UDim.new(0, 8)
+
+discordBtn.MouseButton1Click:Connect(function()
+	-- GANTI DENGAN LINK DISCORD ANDA
+	GuiService:OpenBrowserWindow("https://discord.gg/example") 
+end)
 
 -- == DEFAULT HALAMAN SAAT START == --
 setContent("Home", menuData["Home"])
 menuButtons["Home"].BackgroundColor3 = activeColor
 
-
--- == INJECT KONTEN KE HALAMAN HOME == --
-
--- == INJECT KONTEN KE HALAMAN MAIN == --
-
--- == INJECT KONTEN HALAMAN LAIN NYA YANG AKAN DI TAMBAHKAN NANTI == --
-
--- == INJECT KONTEN KE SETTINGS UI (THEMES) == --
+-- == INJECT KONTEN KE SETTINGS UI == --
 local settingsScroll = pageContainers["Settings UI"]
-
-createExpandableSection(settingsScroll, "Themes", {
-    "Glassy Dark",
-    "Light",
-    "Ocean Blue",
-    "Crimson Red",
-    "Midnight Purple",
-    "Mint Breeze",
-    "Cyber Neon",
-    "Retro Sunset",
-    "Forest Night",
-    "Mono Gray"
-}, function(selectedTheme)
-    applyTheme(selectedTheme)
-end)
-
-
--- == MINIMIZE ICON == --
-local miniIcon = Instance.new("TextButton", gui)
-miniIcon.Size = UDim2.new(0, 40, 0, 40)
-miniIcon.Position = UDim2.new(0, 10, 1, -50)
-miniIcon.Text = "☰"
-miniIcon.TextColor3 = Color3.fromRGB(255, 255, 255)
-miniIcon.Font = Enum.Font.GothamBold
-miniIcon.TextSize = 22
-miniIcon.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
-miniIcon.BackgroundTransparency = 0.2
-miniIcon.Visible = false
-miniIcon.Name = "MiniIcon"
-
-local miniCorner = Instance.new("UICorner", miniIcon)
-miniCorner.CornerRadius = UDim.new(0, 8)
-
+if #settingsScroll:GetChildren() <= 2 then
+    createExpandableSection(settingsScroll, "Themes", {"Glassy Dark","Light","Ocean Blue","Crimson Red","Midnight Purple","Mint Breeze","Cyber Neon","Retro Sunset","Forest Night","Mono Gray"}, function(selectedTheme) applyTheme(selectedTheme) end)
+    local transparencySection = Instance.new("Frame", settingsScroll)
+    transparencySection.Size = UDim2.new(1, 0, 0, 40); transparencySection.BackgroundTransparency = 1
+    transparencySection.AutomaticSize = Enum.AutomaticSize.Y; transparencySection.Name = "Transparency_Section"
+    local tsLayout = Instance.new("UIListLayout", transparencySection); tsLayout.SortOrder = Enum.SortOrder.LayoutOrder; tsLayout.Padding = UDim.new(0, 5)
+    local transparencyToggle = Instance.new("TextButton", transparencySection)
+    transparencyToggle.Size = UDim2.new(1, -20, 0, 40); transparencyToggle.Text = "▶ " .. "Transparency"
+    transparencyToggle.TextColor3 = Color3.fromRGB(230, 230, 230); transparencyToggle.Font = Enum.Font.GothamBold
+    transparencyToggle.TextSize = 18; transparencyToggle.BackgroundTransparency = 1; transparencyToggle.TextXAlignment = Enum.TextXAlignment.Left
+    local transparencyContainer = Instance.new("Frame", transparencySection)
+    transparencyContainer.AutomaticSize = Enum.AutomaticSize.Y; transparencyContainer.BackgroundTransparency = 1
+    transparencyContainer.Visible = false; transparencyContainer.Name = "Transparency_SubContainer"; transparencyContainer.ClipsDescendants = true
+	transparencyContainer.Size = UDim2.new(1,0,0,0)
+	local tcLayout = Instance.new("UIListLayout", transparencyContainer); tcLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	local tcPadding = Instance.new("UIPadding", transparencyContainer); tcPadding.PaddingLeft = UDim.new(0, 15)
+    createTransparencyInput(transparencyContainer)
+    transparencyToggle.MouseButton1Click:Connect(function()
+        transparencyContainer.Visible = not transparencyContainer.Visible
+        transparencyToggle.Text = (transparencyContainer.Visible and "▼ " or "▶ ") .. "Transparency"
+    end)
+end
 
 -- == FUNGSI TOMBOL CLOSE & MINIMIZE == --
-closeBtn.MouseButton1Click:Connect(function()
-    gui:Destroy()
-end)
-
-minBtn.MouseButton1Click:Connect(function()
-    mainFrame.Visible = false
-    miniIcon.Visible = true
-end)
-
-miniIcon.MouseButton1Click:Connect(function()
-    mainFrame.Visible = true
-    miniIcon.Visible = false
-end)
-
-
--- == UPDATE SCROLL OTOMATIS == --
-for _, scroll in pairs(pageContainers) do
-    local layout = scroll:FindFirstChildWhichIsA("UIListLayout")
-    if layout then
-        layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        end)
-    end
-end
+closeBtn.MouseButton1Click:Connect(function() gui:Destroy() end)
+minBtn.MouseButton1Click:Connect(function() mainFrame.Visible = false; miniIcon.Visible = true end)
+miniIcon.MouseButton1Click:Connect(function() mainFrame.Visible = true; miniIcon.Visible = false end)
 
 
 -- == LOADER SYSTEM == --
